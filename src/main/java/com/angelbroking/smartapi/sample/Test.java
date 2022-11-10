@@ -9,7 +9,7 @@ public class Test {
 	public static void main(String[] args) throws SmartAPIException {
 		try {
 
-			SmartConnect smartConnect = new SmartConnect("NELKMxaK"); // PROVIDE YOUR API KEY HERE
+			SmartConnect smartConnect = new SmartConnect("<AppKEY>"); // PROVIDE YOUR API KEY HERE
 
 			/*
 			 * OPTIONAL - ACCESS_TOKEN AND REFRESH TOKEN SmartConnect smartConnect = new
@@ -92,7 +92,7 @@ public class Test {
 
 			/* SmartAPITicker */
 			String clientId = "HRSH351";
-			User user = smartConnect.generateSession("HRSH351", "Neetu~!1988", "836027");
+			User user = smartConnect.generateSession("HRSH351", "<Password>", "836027");
 			//System.out.println("User="+user);
 			//String feedToken = user.getFeedToken();
 			//String strWatchListScript = "nse_cm|2885&nse_cm|1594&nse_cm|11536&mcx_fo|234876";

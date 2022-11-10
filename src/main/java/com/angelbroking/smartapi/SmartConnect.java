@@ -699,6 +699,7 @@ public class SmartConnect {
 			System.out.println(response);
 			return response.getString("data");
 		} catch (Exception | SmartAPIException e) {
+				e.printStackTrace();
 			System.out.println(e.getMessage());
 			return null;
 		}

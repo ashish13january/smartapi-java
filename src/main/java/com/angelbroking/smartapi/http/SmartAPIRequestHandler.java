@@ -11,6 +11,13 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +49,8 @@ public class SmartAPIRequestHandler {
 	 * @param proxy to be set for making requests.
 	 */
 	public SmartAPIRequestHandler(Proxy proxy) {
-		OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		//OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		OkHttpClient.Builder builder =generateDefaultOkHttp();
 		builder.connectTimeout(10000, TimeUnit.MILLISECONDS);
 		if (proxy != null) {
 			builder.proxy(proxy);
@@ -415,6 +423,56 @@ public class SmartAPIRequestHandler {
 				.header("X-Smart API-Version", "3").header("Authorization", "token " + apiKey + ":" + accessToken)
 				.build();
 		return request;
+	}
+	private static OkHttpClient.Builder generateDefaultOkHttp() {
+	    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+	    try {
+	        // Create a trust manager that does not validate certificate chains
+	        final TrustManager[] trustAllCerts = new TrustManager[]{
+	                new X509TrustManager() {
+	                  //  @SuppressLint("TrustAllX509TrustManager")
+	                    @Override
+	                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) //throws CertificateException 
+	                    {
+	                    	
+	                    }
+
+	                   // @SuppressLint("TrustAllX509TrustManager")
+	                    @Override
+	                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) //throws CertificateException 
+	                    {
+	                    }
+
+	                    @Override
+	                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                        return new java.security.cert.X509Certificate[]{};
+	                    }
+	                }
+	        };
+
+	        // Install the all-trusting trust manager
+	        final SSLContext sslContext = SSLContext.getInstance("SSL");
+	        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+	        // Create an ssl socket factory with our all-trusting manager
+	        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+
+	        builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+	        builder.hostnameVerifier(new HostnameVerifier() {
+	            //@SuppressLint("BadHostnameVerifier")
+	            @Override
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        });
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    builder.connectTimeout(60, TimeUnit.SECONDS)
+	            .readTimeout(60, TimeUnit.SECONDS)
+	            .writeTimeout(60, TimeUnit.SECONDS)
+	            .retryOnConnectionFailure(true);
+	    return builder;
 	}
 
 }

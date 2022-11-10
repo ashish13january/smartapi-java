@@ -265,12 +265,13 @@ public class Examples {
 
 		JSONObject requestObejct = new JSONObject();
 		requestObejct.put("exchange", "NSE");
-		requestObejct.put("symboltoken", "3045");
+		requestObejct.put("symboltoken", "11536");
 		requestObejct.put("interval", "ONE_MINUTE");
-		requestObejct.put("fromdate", "2021-03-08 09:00");
-		requestObejct.put("todate", "2021-03-09 09:20");
+		requestObejct.put("fromdate", "2022-11-10 09:00");
+		requestObejct.put("todate", "2022-11-10 09:45");
 
 		String response = smartConnect.candleData(requestObejct);
+		System.out.println("RESPONSE:-"+response);
 	}
 
 	public void tickerUsage(String clientId, String feedToken, String strWatchListScript, String task)
